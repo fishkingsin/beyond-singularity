@@ -29,7 +29,7 @@ def convert_row_to_html(row):
             html_template += f"""
                 <div>
                     <p>{description}</p>
-                    <img src="https://drive.google.com/uc?export=view&id={file_id}" alt="{description}" style="width:100%; max-width:1000px;">
+                    <img src="https://drive.google.com/thumbnail?id={file_id}&sz=w1000" alt="{description}" style="width:100%; max-width:1000px;">
                 </div>
             """
     
