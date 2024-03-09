@@ -52,6 +52,6 @@ def convert_row_to_html(row, row_number):
 for index, row in enumerate(first_few_rows, start=1):  # Adjust min_row as necessary
     html_content = convert_row_to_html(row, index)
     file_name = f"submission_{index}.html"  # Generates a unique file name for each submission
-    with open(file_name, 'w', encoding='utf-8') as file:
+    with open(file_name, 'w', encoding='utf-8-sig') as file:
         file.write(html_content)
     print(f"Generated {file_name}")
