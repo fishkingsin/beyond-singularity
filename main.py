@@ -35,7 +35,7 @@ def convert_row_to_html(row, row_number):
                 html_template += f"""
                     <div>
 
-                        <img src="https://drive.google.com/uc?export=view&id={file_id}" style="width:100%; max-width:1000px;">
+                        <img src="https://drive.google.com/uc?export=view&id={file_id}" style="width:100%; max-width:1000px;"/>
                     </div>
                 """
             else:
