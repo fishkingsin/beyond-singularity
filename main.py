@@ -34,8 +34,7 @@ def convert_row_to_html(row, row_number):
             if file_id and 'drive.google.com' in link:
                 html_template += f"""
                     <div>
-
-                        <img src="https://drive.google.com/uc?export=view&id={file_id}" style="width:100%; max-width:1000px;"/>
+                        <img src="https://drive.google.com/thumbnail?id={file_id}&sz=w1000" style="width:100%; max-width:1000px;"/>
                     </div>
                 """
             else:
