@@ -1,11 +1,18 @@
-import pandas as pd
+from openpyxl import load_workbook
 
-# Load the CSV file
-csv_file_path = 'Beyond Singularity (Responses) - Form Responses 1.csv'  # Update this to the path of your CSV file
-df = pd.read_csv(csv_file_path)
+# Path to your Excel file
+xlsx_file_path = 'Beyond Singularity (Responses).xlsx'  # Update this to the path of your Excel file
 
-def convert_row_to_html(row):
-    # Define the HTML template
+# Load the workbook and select a worksheet
+wb = load_workbook(filename=xlsx_file_path)
+sheet = wb.active  # Assumes you're working with the first sheet; update as necessary
+headers = [cell.value for cell in sheet[1]]  # Headers are typically in the first row
+first_few_rows = [[cell.value for cell in row] for row in sheet.iter_rows(min_row=2, max_row=9)]
+def convert_row_to_html(row, row_number):
+    # Define the HTML template, using row values like row[1] for name, row[0] for timestamp, etc.
+    name = row[1]  # Assuming second column is 'Name'
+    
+    
     html_template = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -13,25 +20,26 @@ def convert_row_to_html(row):
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Submission Detail - {row['Name']}</title>
+        <title>Submission Detail - {name}</title>
     </head>
     <body>
-        <p>Submission Timestamp: {row['Timestamp']}</p>
-        <p>Submitted by: {row['Name']}</p>
         <div>
     """
     
-    # Assuming links start from the 3rd column
-    for link in row[2:]:
-        if pd.notna(link):
+    # Iterate over the cells in the row starting from the 3rd column
+    for cell in row[2:]:
+        if cell:
+            link = cell
             file_id = link.split('id=')[-1]
-            description = "Description here"  # Update or modify as necessary
-            html_template += f"""
-                <div>
-                    <p>{description}</p>
-                    <img src="https://drive.google.com/thumbnail?id={file_id}&sz=w1000" alt="{description}" style="width:100%; max-width:1000px;">
-                </div>
-            """
+            if file_id and 'drive.google.com' in link:
+                html_template += f"""
+                    <div>
+
+                        <img src="https://drive.google.com/uc?export=view&id={file_id}" " style="width:100%; max-width:1000px;">
+                    </div>
+                """
+            else:
+                html_template += f"<p>{cell}</p>"
     
     html_template += """
         </div>
@@ -40,10 +48,10 @@ def convert_row_to_html(row):
     """
     return html_template
 
-# Iterate over each row in the DataFrame and generate an HTML file
-for index, row in df.iterrows():
-    html_content = convert_row_to_html(row)
-    file_name = f"submission_{index+1}.html"  # Generates a unique file name for each submission
+# Iterate over each row in the worksheet and generate an HTML file, skipping the header row
+for index, row in enumerate(first_few_rows, start=1):  # Adjust min_row as necessary
+    html_content = convert_row_to_html(row, index)
+    file_name = f"submission_{index}.html"  # Generates a unique file name for each submission
     with open(file_name, 'w', encoding='utf-8') as file:
         file.write(html_content)
     print(f"Generated {file_name}")
